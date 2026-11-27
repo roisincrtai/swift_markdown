@@ -3,18 +3,26 @@ import SwiftUI
 import UniformTypeIdentifiers
 import WebKit
 
+struct PreviewRestore: Equatable {
+    let location: PreviewLocation?
+    let token = UUID()
+}
+
 struct WebPreview: NSViewRepresentable {
     let blocks: [String]
     let rootDirectory: URL?
     let jump: HeadingJump?
+    let restore: PreviewRestore
+    let recordLocation: (PreviewLocation) -> Void
 
     func makeCoordinator() -> Coordinator { Coordinator() }
 
     func makeNSView(context: Context) -> WKWebView {
-        let config = WKWebViewConfiguration()
-        config.defaultWebpagePreferences.allowsContentJavaScript = false
-        config.websiteDataStore = .nonPersistent()
-        config.setURLSchemeHandler(context.coordinator.files, forURLScheme: "md-local")
+        let config = PreviewPage.configuration(files: context.coordinator.files)
+        let controller = config.userContentController
+        controller.add(context.coordinator, contentWorld: .defaultClient, name: "markdownScroll")
+        controller.addUserScript(WKUserScript(source: Self.trackScroll, injectionTime: .atDocumentEnd,
+                                               forMainFrameOnly: true, in: .defaultClient))
 
         let view = WKWebView(frame: .zero, configuration: config)
         view.navigationDelegate = context.coordinator
@@ -23,10 +31,41 @@ struct WebPreview: NSViewRepresentable {
     }
 
     func updateNSView(_ view: WKWebView, context: Context) {
-        context.coordinator.update(view, blocks: blocks, directory: rootDirectory, jump: jump)
+        context.coordinator.update(view, blocks: blocks, directory: rootDirectory, jump: jump,
+                                   restore: restore, recordLocation: recordLocation)
     }
 
-    final class Coordinator: NSObject, WKNavigationDelegate {
+    static func dismantleNSView(_ view: WKWebView, coordinator: Coordinator) {
+        view.configuration.userContentController.removeScriptMessageHandler(forName: "markdownScroll", contentWorld: .defaultClient)
+    }
+
+    private static let trackScroll = """
+    let pending = false;
+    window.addEventListener('scroll', () => {
+        if (pending) return;
+        pending = true;
+        requestAnimationFrame(() => {
+            pending = false;
+            const blocks = document.getElementById('document')?.children;
+            if (!blocks?.length) return;
+            let left = 0, right = blocks.length;
+            while (left + 1 < right) {
+                const mid = (left + right) >> 1;
+                if (blocks[mid].getBoundingClientRect().top <= 0) left = mid;
+                else right = mid;
+            }
+            const block = blocks[left];
+            window.webkit.messageHandlers.markdownScroll.postMessage({
+                blockIndex: left,
+                heading: block.firstElementChild?.id || '',
+                offset: -block.getBoundingClientRect().top,
+                scrollY: window.scrollY
+            });
+        });
+    }, { passive: true });
+    """
+
+    final class Coordinator: NSObject, WKNavigationDelegate, WKScriptMessageHandler {
         fileprivate let files = LocalImages()
         private var ready = false
         private var patching = false
@@ -38,19 +77,31 @@ struct WebPreview: NSViewRepresentable {
         private var needsRefresh = false
         private var jump: HeadingJump?
         private var completed: HeadingJump?
+        private var restore: PreviewRestore?
+        private var appliedRestore: PreviewRestore?
+        private var savedLocation: PreviewLocation?
+        private var restoring = false
+        private var onLocation: ((PreviewLocation) -> Void)?
 
         func loadShell(_ view: WKWebView) {
-            guard let page = Bundle.main.url(forResource: "Preview", withExtension: "html"),
-                  let html = try? String(contentsOf: page, encoding: .utf8) else { return }
+            guard let html = try? PreviewPage.shell() else { return }
             loadGeneration += 1
             ready = false
             patching = false
+            restoring = false
+            appliedRestore = nil
             installed = []
             completed = nil
             view.loadHTMLString(html, baseURL: nil)
         }
 
-        func update(_ view: WKWebView, blocks: [String], directory: URL?, jump: HeadingJump?) {
+        func update(_ view: WKWebView, blocks: [String], directory: URL?, jump: HeadingJump?,
+                    restore: PreviewRestore, recordLocation: @escaping (PreviewLocation) -> Void) {
+            if self.restore != restore {
+                self.restore = restore
+                savedLocation = restore.location
+            }
+            onLocation = recordLocation
             if wanted != blocks || self.directory != directory { retrying = false }
             wanted = blocks
             if self.directory != directory {
@@ -72,8 +123,15 @@ struct WebPreview: NSViewRepresentable {
         }
 
         private func flush(_ view: WKWebView) {
-            guard ready, !patching else { return }
+            guard ready, !patching, !restoring else { return }
             if wanted == installed && !needsRefresh {
+                if !installed.isEmpty, let restore, appliedRestore != restore {
+                    appliedRestore = restore
+                    if let savedLocation {
+                        restoreScroll(view, location: savedLocation)
+                        return
+                    }
+                }
                 if let jump, jump != completed {
                     completed = jump
                     navigate(view, to: jump.id)
@@ -89,7 +147,7 @@ struct WebPreview: NSViewRepresentable {
                     installed[installed.count - 1 - tail] == target[target.count - 1 - tail] { tail += 1 }
             }
             needsRefresh = false
-            let markup = target[head..<(target.count - tail)].map { "<div class=\"markdown-block\">\($0)</div>" }.joined()
+            let markup = PreviewPage.markup(target[head..<(target.count - tail)])
             let generation = loadGeneration
             patching = true
             view.callAsyncJavaScript(
@@ -119,6 +177,41 @@ struct WebPreview: NSViewRepresentable {
             }
         }
 
+        private func restoreScroll(_ view: WKWebView, location: PreviewLocation) {
+            guard location.scrollY.isFinite, location.offset.isFinite else { return }
+            let generation = loadGeneration
+            restoring = true
+            view.callAsyncJavaScript(
+                """
+                const children = document.getElementById('document').children;
+                const named = heading ? document.getElementById(heading)?.closest('.markdown-block') : null;
+                const block = named || children[index];
+                window.scrollTo(0, block ? window.scrollY + block.getBoundingClientRect().top + offset : y);
+                """,
+                arguments: ["heading": location.headingID ?? "", "index": max(0, location.blockIndex),
+                            "offset": location.offset, "y": max(0, location.scrollY)],
+                in: nil, in: .defaultClient
+            ) { [weak self, weak view] _ in
+                guard let self, let view, self.loadGeneration == generation else { return }
+                self.restoring = false
+                self.flush(view)
+            }
+        }
+
+        func userContentController(_ controller: WKUserContentController, didReceive message: WKScriptMessage) {
+            guard ready, !restoring, !installed.isEmpty, appliedRestore == restore,
+                  let body = message.body as? [String: Any], let index = body["blockIndex"] as? Int,
+                  let y = body["scrollY"] as? Double, y.isFinite,
+                  let offset = body["offset"] as? Double, offset.isFinite else { return }
+            let heading = body["heading"] as? String ?? ""
+            let location = PreviewLocation(blockIndex: index, headingID: heading.isEmpty ? nil : heading,
+                                           offset: offset, scrollY: y)
+            if savedLocation != location {
+                savedLocation = location
+                onLocation?(location)
+            }
+        }
+
         private func navigate(_ view: WKWebView, to id: String) {
             view.callAsyncJavaScript("document.getElementById(id)?.scrollIntoView({block: 'start'});",
                                      arguments: ["id": id], in: nil, in: .defaultClient, completionHandler: nil)
@@ -139,7 +232,7 @@ struct WebPreview: NSViewRepresentable {
                 if url.path == "/", let fragment = url.fragment {
                     navigate(view, to: fragment.removingPercentEncoding ?? fragment)
                 } else if let file = files.localURL(for: url) {
-                    let markdown = ["md", "markdown", "mdown", "mkd", "mkdn"]
+                    let markdown = ["md", "markdown", "mdown", "mkd", "mkdn", "txt"]
                     if markdown.contains(file.pathExtension.lowercased()) {
                         NSDocumentController.shared.openDocument(withContentsOf: file, display: true) { _, _, error in
                             if let error { NSApp.presentError(error) }
@@ -155,7 +248,7 @@ struct WebPreview: NSViewRepresentable {
     }
 }
 
-private final class LocalImages: NSObject, WKURLSchemeHandler {
+final class LocalImages: NSObject, WKURLSchemeHandler {
     var root: URL?
     private var active: Set<ObjectIdentifier> = []
     private let readQueue = DispatchQueue(label: "org.swiftmarkdown.local-images", qos: .userInitiated)

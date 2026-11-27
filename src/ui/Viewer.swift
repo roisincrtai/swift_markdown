@@ -156,7 +156,12 @@ private struct Viewer: View {
     private var sidebar: some View {
         VStack(alignment: .leading, spacing: 0) {
             Picker("Sidebar", selection: $model.sidebarMode) {
-                ForEach(SidebarMode.allCases, id: \.self) { mode in Text(mode.rawValue).tag(mode) }
+                ForEach(SidebarMode.allCases, id: \.self) { mode in
+                    Image(systemName: mode.icon)
+                        .accessibilityLabel(mode.rawValue)
+                        .help(mode.rawValue)
+                        .tag(mode)
+                }
             }
             .pickerStyle(.segmented)
             .labelsHidden()

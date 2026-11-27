@@ -3,15 +3,15 @@ import Darwin
 import Foundation
 import os
 
-final class FileAccess {
+final class FileAccess: Sendable {
     let url: URL
     private let scopedURL: URL
-    private let started: Bool
+    let isScoped: Bool
 
     init(_ url: URL) {
         self.url = url.standardizedFileURL
         scopedURL = url
-        started = url.startAccessingSecurityScopedResource()
+        isScoped = url.startAccessingSecurityScopedResource()
     }
 
     convenience init(_ reference: FileReference) {
@@ -26,7 +26,7 @@ final class FileAccess {
     }
 
     deinit {
-        if started { scopedURL.stopAccessingSecurityScopedResource() }
+        if isScoped { scopedURL.stopAccessingSecurityScopedResource() }
     }
 
     func reference(for target: URL? = nil) -> FileReference {

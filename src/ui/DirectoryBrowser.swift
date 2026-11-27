@@ -5,6 +5,14 @@ enum SidebarMode: String, CaseIterable {
     case outline = "Outline"
     case directory = "Directory"
     case recent = "Recent"
+
+    var icon: String {
+        switch self {
+        case .outline: "list.bullet.indent"
+        case .directory: "folder"
+        case .recent: "clock.arrow.circlepath"
+        }
+    }
 }
 
 struct DirectoryEntry: Identifiable {

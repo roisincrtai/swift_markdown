@@ -105,18 +105,25 @@ final class MarkdownDocument: NSDocument {
 
     override var fileURL: URL? {
         didSet {
-            model.directory = fileURL?.deletingLastPathComponent()
-            if !windowControllers.isEmpty, let fileURL, fileURL != oldValue {
-                let selected = FileAccess(fileURL)
-                keepAccess(selected, inherited: nil)
-                SessionStore.shared.noteOpened(selected.reference())
-                persistView()
+            let changed = fileURL
+            guard changed != oldValue else { return }
+            DispatchQueue.main.async { [weak self] in
+                guard let self, self.fileURL == changed else { return }
+                self.model.directory = changed?.deletingLastPathComponent()
+                if !self.windowControllers.isEmpty, let changed {
+                    let selected = FileAccess(changed)
+                    self.keepAccess(selected, inherited: nil)
+                    SessionStore.shared.noteOpened(selected.reference())
+                    self.persistView()
+                }
             }
         }
     }
 
     func keepAccess(_ access: FileAccess, inherited: FileAccess?) {
-        self.access = access
+        if self.access?.url != access.url || access.isScoped || self.access?.isScoped != true {
+            self.access = access
+        }
         if let inherited { inheritedAccess = inherited }
         else if let previous = inheritedAccess, !previous.contains(access.url) { inheritedAccess = nil }
     }
@@ -179,6 +186,7 @@ final class MarkdownDocument: NSDocument {
     }
 
     override func makeWindowControllers() {
+        model.directory = fileURL?.deletingLastPathComponent()
         let session = SessionStore.shared.state
         if let path = fileURL?.standardizedFileURL.path, let saved = session.views[path] {
             viewState = saved

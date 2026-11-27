@@ -1,0 +1,22 @@
+body.print-preview {
+    color-scheme: light;
+    overflow: hidden;
+    color: #141414;
+    background: white;
+    font: 11pt/1.5 -apple-system, system-ui, sans-serif;
+    --ink: #141414;
+    --muted: #424242;
+    --surface: white;
+    --subtle: #f3f5f8;
+    --line: #dce1ea;
+    --link: #244e96;
+    --warning: #9c3a21;
+}
+.print-preview main { position: relative; width: auto; max-width: none; padding: 0; margin: 0; }
+.print-preview :is(h1, h2, h3, h4, h5, h6) { break-after: avoid; }
+.print-preview :is(img, math, tr) { break-inside: avoid; }
+.print-preview :is(.table-scroll, .display-math, pre) { overflow: visible; }
+.print-preview pre { white-space: pre-wrap; overflow-wrap: anywhere; }
+.print-preview thead { display: table-header-group; }
+.print-preview img { max-height: 690pt; object-fit: contain; }
+.print-preview p { orphans: 3; widows: 3; }
