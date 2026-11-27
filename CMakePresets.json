@@ -1,0 +1,43 @@
+{
+  "version": 6,
+  "cmakeMinimumRequired": {"major": 3, "minor": 25, "patch": 0},
+  "configurePresets": [
+    {
+      "name": "macos",
+      "displayName": "macOS (Xcode)",
+      "generator": "Xcode",
+      "binaryDir": "${sourceDir}/build/artifacts",
+      "cacheVariables": {"CMAKE_OSX_DEPLOYMENT_TARGET": "14.0"}
+    },
+    {"name": "default", "inherits": "macos"},
+    {
+      "name": "macos-ninja",
+      "displayName": "macOS (Ninja)",
+      "generator": "Ninja",
+      "binaryDir": "${sourceDir}/build/native",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "CMAKE_OSX_DEPLOYMENT_TARGET": "14.0",
+        "CMAKE_Swift_FLAGS": "-module-cache-path \"${sourceDir}/build/swift-module-cache\""
+      }
+    },
+    {
+      "name": "core",
+      "displayName": "Portable C++ libraries and tests",
+      "binaryDir": "${sourceDir}/build/core",
+      "cacheVariables": {"SWIFT_MARKDOWN_BUILD_APP": "OFF", "CMAKE_BUILD_TYPE": "Release"}
+    }
+  ],
+  "buildPresets": [
+    {"name": "macos", "configurePreset": "macos", "configuration": "Release"},
+    {"name": "default", "configurePreset": "default", "configuration": "Release"},
+    {"name": "macos-debug", "configurePreset": "macos", "configuration": "Debug"},
+    {"name": "macos-ninja", "configurePreset": "macos-ninja"},
+    {"name": "core", "configurePreset": "core"}
+  ],
+  "testPresets": [
+    {"name": "macos", "configurePreset": "macos", "configuration": "Release", "output": {"outputOnFailure": true}},
+    {"name": "macos-ninja", "configurePreset": "macos-ninja", "output": {"outputOnFailure": true}},
+    {"name": "core", "configurePreset": "core", "output": {"outputOnFailure": true}}
+  ]
+}

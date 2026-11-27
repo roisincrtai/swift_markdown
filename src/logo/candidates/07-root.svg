@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 256 256" fill="none" role="img" aria-labelledby="name">
+  <title id="name">Root</title>
+  <defs><linearGradient id="g07" x1="0%" x2="100%" y1="0%" y2="100%"><stop stop-color="#284C72"/><stop offset="1" stop-color="#152D40"/></linearGradient></defs>
+  <rect x="17" y="17" width="222" height="222" rx="52" fill="url(#g07)"/><rect x="19.5" y="19.5" width="217" height="217" rx="49.5" stroke="white" stroke-opacity=".20" stroke-width="2.5"/><g color="#ABF1D2" stroke="#ABF1D2" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"><path d="M53 137h17l19 35 33-84h81m-63 38 25 37m0-37-25 37"/><path d="M67 198h122" opacity=".55"/></g>
+</svg>

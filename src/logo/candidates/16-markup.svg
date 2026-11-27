@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 256 256" fill="none" role="img" aria-labelledby="name">
+  <title id="name">Markup</title>
+  <defs><linearGradient id="g16" x1="0%" x2="100%" y1="0%" y2="100%"><stop stop-color="#31715F"/><stop offset="1" stop-color="#1D3E37"/></linearGradient></defs>
+  <rect x="17" y="17" width="222" height="222" rx="52" fill="url(#g16)"/><rect x="19.5" y="19.5" width="217" height="217" rx="49.5" stroke="white" stroke-opacity=".20" stroke-width="2.5"/><g color="#D6F4A8" stroke="#D6F4A8" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"><path d="M54 103l-19 25 19 25m148-50 19 25-19 25M74 162V94l28 35 28-35v68m44-51v49m-18-17 18 17 18-17"/></g>
+</svg>

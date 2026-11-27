@@ -1,0 +1,10 @@
+add_library(swift_markdown_core STATIC markdown.cpp inline.cpp)
+target_include_directories(swift_markdown_core PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}")
+target_link_libraries(swift_markdown_core PRIVATE swift_markdown_tex)
+target_compile_features(swift_markdown_core PUBLIC cxx_std_20)
+
+if(BUILD_TESTING)
+    add_executable(markdown_tests tests/markdown_tests.cpp)
+    target_link_libraries(markdown_tests PRIVATE swift_markdown_core)
+    add_test(NAME markdown.render COMMAND markdown_tests)
+endif()

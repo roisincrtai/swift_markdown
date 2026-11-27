@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 256 256" fill="none" role="img" aria-labelledby="name">
+  <title id="name">Bullets</title>
+  <defs><linearGradient id="g18" x1="0%" x2="100%" y1="0%" y2="100%"><stop stop-color="#833B5C"/><stop offset="1" stop-color="#41253A"/></linearGradient></defs>
+  <rect x="17" y="17" width="222" height="222" rx="52" fill="url(#g18)"/><rect x="19.5" y="19.5" width="217" height="217" rx="49.5" stroke="white" stroke-opacity=".20" stroke-width="2.5"/><g color="#FFD8D5" stroke="#FFD8D5" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"><circle cx="74" cy="83" r="6" fill="currentColor"/><circle cx="74" cy="128" r="6" fill="currentColor"/><circle cx="74" cy="173" r="6" fill="currentColor"/><path d="M103 83h76m-76 45h56m-56 45h73m13-28v38"/></g>
+</svg>

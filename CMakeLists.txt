@@ -1,0 +1,30 @@
+cmake_minimum_required(VERSION 3.25)
+
+if(CMAKE_SOURCE_DIR STREQUAL CMAKE_BINARY_DIR)
+    message(FATAL_ERROR "Use cmake --preset macos or configure under build/.")
+endif()
+
+set(CMAKE_OSX_DEPLOYMENT_TARGET "14.0" CACHE STRING "Minimum macOS deployment target")
+project(SwiftMarkdown VERSION 0.1.0 LANGUAGES CXX)
+
+option(SWIFT_MARKDOWN_BUILD_APP "Build the native macOS viewer" ${APPLE})
+if(SWIFT_MARKDOWN_BUILD_APP)
+    if(NOT APPLE)
+        message(FATAL_ERROR "The app requires macOS. Use cmake --preset core for the C++ libraries and tests.")
+    endif()
+    enable_language(Swift)
+endif()
+
+set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY "${CMAKE_SOURCE_DIR}/build/lib")
+foreach(config Debug Release RelWithDebInfo MinSizeRel)
+    string(TOUPPER "${config}" config_upper)
+    set(CMAKE_ARCHIVE_OUTPUT_DIRECTORY_${config_upper} "${CMAKE_SOURCE_DIR}/build/lib/${config}")
+endforeach()
+
+include(CTest)
+add_subdirectory(src/tex)
+add_subdirectory(src/core)
+add_subdirectory(src/config)
+if(SWIFT_MARKDOWN_BUILD_APP)
+    add_subdirectory(src/ui)
+endif()

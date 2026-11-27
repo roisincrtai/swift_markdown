@@ -1,0 +1,4 @@
+module YAMLConfigBridge {
+    header "yaml_config.h"
+    export *
+}

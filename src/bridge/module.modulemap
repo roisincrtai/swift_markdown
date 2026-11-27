@@ -1,0 +1,4 @@
+module MarkdownBridge {
+    header "markdown_bridge.h"
+    export *
+}

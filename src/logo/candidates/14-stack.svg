@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 256 256" fill="none" role="img" aria-labelledby="name">
+  <title id="name">Stack</title>
+  <defs><linearGradient id="g14" x1="0%" x2="100%" y1="0%" y2="100%"><stop stop-color="#2E726E"/><stop offset="1" stop-color="#20374A"/></linearGradient></defs>
+  <rect x="17" y="17" width="222" height="222" rx="52" fill="url(#g14)"/><rect x="19.5" y="19.5" width="217" height="217" rx="49.5" stroke="white" stroke-opacity=".20" stroke-width="2.5"/><g color="#E4F9D7" stroke="#E4F9D7" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"><path d="M53 115l75-46 75 46-75 46zM53 141l75 46 75-46M85 114l22-13m26 17 24-14"/></g>
+</svg>

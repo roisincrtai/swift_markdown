@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 256 256" fill="none" role="img" aria-labelledby="name">
+  <title id="name">Margin</title>
+  <defs><linearGradient id="g01" x1="0%" x2="100%" y1="0%" y2="100%"><stop stop-color="#335970"/><stop offset="1" stop-color="#233444"/></linearGradient></defs>
+  <rect x="17" y="17" width="222" height="222" rx="52" fill="url(#g01)"/><rect x="19.5" y="19.5" width="217" height="217" rx="49.5" stroke="white" stroke-opacity=".20" stroke-width="2.5"/><g color="#AEEADD" stroke="#AEEADD" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"><path d="M75 48h73l24 24v135H75zM148 48v25h24M98 50v155M115 110h34m-34 25h34m-34 25h23"/></g>
+</svg>

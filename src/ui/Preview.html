@@ -1,0 +1,82 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; style-src 'unsafe-inline'; img-src md-local:">
+<base href="md-local://document/">
+<title>Markdown Preview</title>
+<style>
+:root {
+    color-scheme: light dark;
+    --ink: #23262e;
+    --muted: #656c79;
+    --surface: #fff;
+    --subtle: #f3f5f8;
+    --line: #dce1ea;
+    --link: #315eb3;
+    --warning: #9c3a21;
+}
+@media (prefers-color-scheme: dark) {
+    :root {
+        --ink: #e8ebf1;
+        --muted: #aab0bc;
+        --surface: #1e2025;
+        --subtle: #2a2e36;
+        --line: #424953;
+        --link: #a2bbff;
+        --warning: #ffa38c;
+    }
+}
+* { box-sizing: border-box; }
+html { background: var(--surface); }
+body {
+    color: var(--ink);
+    margin: 0;
+    font: 16px/1.65 -apple-system, system-ui, sans-serif;
+    overflow-wrap: anywhere;
+}
+main { max-width: 860px; padding: 45px clamp(23px, 6vw, 58px) 90px; margin: auto; }
+.markdown-block { display: flow-root; }
+.markdown-block > :first-child { margin-top: 0; }
+.markdown-block > :last-child { margin-bottom: 15px; }
+.markdown-block:has(> :is(h1,h2,h3,h4,h5,h6)):not(:first-child) { margin-top: 15px; }
+h1, h2, h3, h4, h5, h6 { line-height: 1.24; scroll-margin-top: 27px; letter-spacing: -.025em; }
+h1 { font-size: 2.45em; font-weight: 720; }
+h2 { font-size: 1.55em; font-weight: 685; border-bottom: 1px solid var(--line); padding-bottom: .28em; }
+h3 { font-size: 1.23em; }
+h4, h5, h6 { font-size: 1em; }
+a { color: var(--link); text-underline-offset: .15em; }
+blockquote { border-left: 3px solid var(--line); padding: 1px 14px; margin: .5em 0; color: var(--muted); }
+blockquote > :first-child { margin-top: 0; }
+blockquote > :last-child { margin-bottom: 0; }
+ul, ol { padding-left: 1.5em; }
+li:not(:last-child) { margin-bottom: .25em; }
+li > p { margin: 0; }
+li.task { list-style: none; position: relative; }
+li.task > input { position: absolute; left: -1.65em; top: .27em; }
+code { font: .87em/1.5 ui-monospace, Menlo, monospace; background: var(--subtle); border-radius: 4px; padding: .12em .3em; }
+pre { margin: 0; padding: 14px 16px; background: var(--subtle); border: 1px solid var(--line); border-radius: 8px; overflow-x: auto; }
+pre code { padding: 0; background: none; }
+hr { border: 0; border-top: 1px solid var(--line); }
+img { max-width: 100%; height: auto; }
+.table-scroll, .display-math { overflow-x: auto; }
+.display-math { padding: .54em 0 .76em; }
+.inline-display { display: inline-block; vertical-align: middle; }
+table { border-collapse: collapse; width: 100%; }
+td, th { border-bottom: 1px solid var(--line); padding: .46em .66em; vertical-align: top; }
+th { background: var(--subtle); font-weight: 650; }
+.align-left { text-align: left; }
+.align-center { text-align: center; }
+.align-right { text-align: right; }
+.tex-error { color: var(--warning); white-space: pre-wrap; }
+#empty-state { display: none; color: var(--muted); margin: 45px 28px; text-align: center; }
+body.empty #empty-state { display: block; }
+body.empty main { display: none; }
+</style>
+</head>
+<body class="empty">
+<p id="empty-state">Open a Markdown file or show the source editor to start writing.</p>
+<main id="document" aria-label="Markdown preview"></main>
+</body>
+</html>

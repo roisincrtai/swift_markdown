@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 256 256" fill="none" role="img" aria-labelledby="name">
+  <title id="name">Open Book</title>
+  <defs><linearGradient id="g09" x1="0%" x2="100%" y1="0%" y2="100%"><stop stop-color="#255668"/><stop offset="1" stop-color="#103845"/></linearGradient></defs>
+  <rect x="17" y="17" width="222" height="222" rx="52" fill="url(#g09)"/><rect x="19.5" y="19.5" width="217" height="217" rx="49.5" stroke="white" stroke-opacity=".20" stroke-width="2.5"/><g color="#FCDEAE" stroke="#FCDEAE" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"><path d="M128 91c-19-20-43-24-72-20v100c29-4 53 0 72 20 19-20 43-24 72-20V71c-29-4-53 0-72 20zm0 0v100M78 104c12 0 22 4 33 11m34 0c11-7 21-11 33-11"/></g>
+</svg>

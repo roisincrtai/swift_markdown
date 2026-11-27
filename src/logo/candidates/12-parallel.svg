@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 256 256" fill="none" role="img" aria-labelledby="name">
+  <title id="name">Parallel</title>
+  <defs><linearGradient id="g12" x1="0%" x2="100%" y1="0%" y2="100%"><stop stop-color="#3E5294"/><stop offset="1" stop-color="#1C2543"/></linearGradient></defs>
+  <rect x="17" y="17" width="222" height="222" rx="52" fill="url(#g12)"/><rect x="19.5" y="19.5" width="217" height="217" rx="49.5" stroke="white" stroke-opacity=".20" stroke-width="2.5"/><g color="#DAE5FF" stroke="#DAE5FF" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"><path d="M64 74h128v108H64zM107 74v108m44-108v108M77 99h16m-16 20h16m-16 20h11m36-28h11m-11 24h11m32-26 8 8-8 8"/></g>
+</svg>

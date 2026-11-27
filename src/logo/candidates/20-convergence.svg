@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 256 256" fill="none" role="img" aria-labelledby="name">
+  <title id="name">Convergence</title>
+  <defs><linearGradient id="g20" x1="0%" x2="100%" y1="0%" y2="100%"><stop stop-color="#66518C"/><stop offset="1" stop-color="#322447"/></linearGradient></defs>
+  <rect x="17" y="17" width="222" height="222" rx="52" fill="url(#g20)"/><rect x="19.5" y="19.5" width="217" height="217" rx="49.5" stroke="white" stroke-opacity=".20" stroke-width="2.5"/><g color="#D9F6FF" stroke="#D9F6FF" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"><path d="M51 76h37l40 52 39-52h38M51 180h37l40-52 39 52h38M128 79v98"/><circle cx="128" cy="128" r="8" fill="currentColor"/></g>
+</svg>

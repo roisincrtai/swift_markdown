@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 256 256" fill="none" role="img" aria-labelledby="name">
+  <title id="name">Integral</title>
+  <defs><linearGradient id="g11" x1="0%" x2="100%" y1="0%" y2="100%"><stop stop-color="#7C4B36"/><stop offset="1" stop-color="#3E251D"/></linearGradient></defs>
+  <rect x="17" y="17" width="222" height="222" rx="52" fill="url(#g11)"/><rect x="19.5" y="19.5" width="217" height="217" rx="49.5" stroke="white" stroke-opacity=".20" stroke-width="2.5"/><g color="#FFE9D9" stroke="#FFE9D9" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"><path d="M105 189c20 13 34-3 36-31l8-70c2-27 21-38 34-25M69 94h37m-37 34h29m-29 34h26"/></g>
+</svg>

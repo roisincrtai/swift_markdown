@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="1024" viewBox="0 0 256 256" fill="none" role="img" aria-labelledby="name">
+  <title id="name">Index</title>
+  <defs><linearGradient id="g08" x1="0%" x2="100%" y1="0%" y2="100%"><stop stop-color="#6B682B"/><stop offset="1" stop-color="#33301B"/></linearGradient></defs>
+  <rect x="17" y="17" width="222" height="222" rx="52" fill="url(#g08)"/><rect x="19.5" y="19.5" width="217" height="217" rx="49.5" stroke="white" stroke-opacity=".20" stroke-width="2.5"/><g color="#E9F6A2" stroke="#E9F6A2" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"><path d="M72 68v120M72 89h25m-25 39h25m-25 39h25m23-78h63m-63 39h49m-49 39h58"/><circle cx="72" cy="68" r="4"/></g>
+</svg>
