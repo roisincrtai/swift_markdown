@@ -1,4 +1,4 @@
-// tokenizer/cpp/json.cpp -- see json.hpp. Standard C++17 only.
+// json.cpp -- see json.hpp. Standard C++17 only.
 #include "json.hpp"
 
 #include <algorithm>
@@ -15,9 +15,9 @@
 #include <unordered_map>
 #include <utility>
 
-#include "utf8.hpp"
+#include "utf8/utf8.hpp"
 
-namespace mira_bpe {
+namespace common::json {
 
 // ---------------------------------------------------------------------------------------------
 // values: copied and destroyed without recursion
@@ -303,7 +303,7 @@ private:
                 fail("a control character (" + shown(c) + ") in a string must be escaped");
             if (c >= 0x80) {
                 std::uint32_t cp = 0;
-                int k = utf8_sequence(s + pos_, n - pos_, &cp);
+                int k = utf8::utf8_sequence(s + pos_, n - pos_, &cp);
                 if (k < 0) fail("a string is not well-formed UTF-8 (" + shown(c) + ")");
                 out.append(text_.data() + pos_, static_cast<std::size_t>(k));
                 pos_ += static_cast<std::size_t>(k);
@@ -338,7 +338,7 @@ private:
                                     start);
                         cp = 0x10000 + ((cp - 0xD800) << 10) + (low - 0xDC00);
                     }
-                    append_utf8(out, cp);
+                    utf8::append_utf8(out, cp);
                 } break;
                 default:
                     pos_ = start;
@@ -536,7 +536,7 @@ void dump_string(const std::string& text, bool ensure_ascii, std::string& out) {
     std::size_t i = 0, n = text.size();
     while (i < n) {
         std::uint32_t cp = 0;
-        int k = utf8_sequence(s + i, n - i, &cp);
+        int k = utf8::utf8_sequence(s + i, n - i, &cp);
         if (k < 0)
             throw std::invalid_argument("JSON: a string is not well-formed UTF-8 (byte " +
                                         std::to_string(i) + " of it)");
@@ -677,4 +677,4 @@ std::string dump_jsonl(const std::vector<Json>& values, const DumpOptions& optio
     return out;
 }
 
-}  // namespace mira_bpe
+}  // namespace common::json

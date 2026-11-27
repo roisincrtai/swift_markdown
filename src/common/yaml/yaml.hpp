@@ -1,4 +1,4 @@
-// tokenizer/cpp/yaml.hpp -- a YAML 1.2 reader (yaml.org/spec/1.2.2), standard C++17 only.
+// yaml.hpp -- a YAML 1.2 reader (yaml.org/spec/1.2.2), standard C++17 only.
 //
 // Three layers, each usable on its own:
 //   - parse_events: the event stream of the text (stream, document, mapping, sequence, scalar and
@@ -33,10 +33,9 @@
 #include <string_view>
 #include <vector>
 
-#include "json.hpp"
+#include "json/json.hpp"
 
-namespace mira_bpe {
-namespace yaml {
+namespace common::yaml {
 
 struct Mark {
     std::size_t index = 0, line = 0, column = 0;   // code points; line and column from 0
@@ -92,9 +91,8 @@ std::vector<Document> load_yaml_all(std::string_view text, const Options& option
 // The one document of `text`; an error when there is none or more than one.
 Document load_yaml(std::string_view text, const Options& options = Options());
 
-Json to_json(const Node& node);
-Json parse_yaml(std::string_view text, const Options& options = Options());
-std::vector<Json> parse_yaml_all(std::string_view text, const Options& options = Options());
+json::Json to_json(const Node& node);
+json::Json parse_yaml(std::string_view text, const Options& options = Options());
+std::vector<json::Json> parse_yaml_all(std::string_view text, const Options& options = Options());
 
-}  // namespace yaml
-}  // namespace mira_bpe
+}  // namespace common::yaml

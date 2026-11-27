@@ -1,4 +1,4 @@
-// tokenizer/cpp/utf8.hpp -- UTF-8 and the character classes of Python's re \s and \d.
+// utf8.hpp -- UTF-8 and the character classes of Python's re \s and \d.
 //
 // Standard C++17 only. A byte that does not start a well-formed UTF-8 sequence is one character
 // that is neither whitespace nor a digit.
@@ -9,7 +9,7 @@
 #include <string>
 #include <string_view>
 
-namespace mira_bpe {
+namespace common::utf8 {
 
 enum CharClass : unsigned char { OTHER = 0, SPACE = 1, DIGIT = 2 };
 
@@ -21,8 +21,7 @@ int utf8_sequence(const unsigned char* p, std::size_t n, std::uint32_t* cp);
 // in *length; an ill-formed byte is one OTHER character.
 CharClass class_at(const unsigned char* p, std::size_t n, std::size_t* length);
 
-// Python's str.isspace() and str.isdecimal() of the code point cp: the classes of MIRA's rule,
-// \p{Python_Space} and \p{Python_Decimal} of regex.hpp.
+// Whether cp is whitespace or a decimal digit according to Python's Unicode character classes.
 bool is_python_space(std::uint32_t cp);
 bool is_python_decimal(std::uint32_t cp);
 
@@ -32,4 +31,4 @@ void append_utf8(std::string& out, std::uint32_t cp);
 // `bytes` decoded as UTF-8 with Python's errors="replace", written back as UTF-8.
 std::string utf8_replace(std::string_view bytes);
 
-}  // namespace mira_bpe
+}  // namespace common::utf8

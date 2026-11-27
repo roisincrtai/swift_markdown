@@ -1,4 +1,4 @@
-// tokenizer/cpp/parser.cpp -- tokens to events: the second half of yaml.hpp's reader.
+// yaml_parser.cpp -- tokens to events: the second half of yaml.hpp's reader.
 //
 // The states and their order follow libyaml's parser (and PyYAML's): an explicit stack of states
 // rather than recursion, one event per step.
@@ -6,8 +6,7 @@
 
 #include "yaml_scanner.hpp"
 
-namespace mira_bpe {
-namespace yaml {
+namespace common::yaml {
 
 namespace {
 
@@ -469,5 +468,4 @@ std::vector<Event> parse_events(std::string_view text, const Options& options) {
     return Parser(text, options).run();
 }
 
-}  // namespace yaml
-}  // namespace mira_bpe
+}  // namespace common::yaml

@@ -1,6 +1,6 @@
-add_library(swift_markdown_config STATIC
-    yaml_config.cpp mira/yaml.cpp mira/yaml_parser.cpp mira/yaml_scanner.cpp mira/json.cpp mira/utf8.cpp)
-target_include_directories(swift_markdown_config PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}" PRIVATE mira)
+add_library(swift_markdown_config STATIC yaml_config.cpp)
+target_include_directories(swift_markdown_config PUBLIC "${CMAKE_CURRENT_SOURCE_DIR}")
+target_link_libraries(swift_markdown_config PRIVATE swift_markdown_yaml)
 target_compile_features(swift_markdown_config PUBLIC cxx_std_17)
 
 if(BUILD_TESTING)

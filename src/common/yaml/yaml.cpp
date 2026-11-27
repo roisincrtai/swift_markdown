@@ -1,4 +1,4 @@
-// tokenizer/cpp/yaml.cpp -- the events in the test suite's format, the node graph, and
+// yaml.cpp -- the events in the test suite's format, the node graph, and
 // the core schema. See yaml.hpp. Standard C++17 only.
 #include "yaml.hpp"
 
@@ -11,8 +11,7 @@
 #include <sstream>
 #include <unordered_set>
 
-namespace mira_bpe {
-namespace yaml {
+namespace common::yaml {
 
 std::string events_text(const std::vector<Event>& events) {
     std::string out;
@@ -188,18 +187,18 @@ int special_float(const std::string& s) {   // 1: inf, -1: -inf, 2: nan, 0: none
     return 0;
 }
 
-Json string_json(const std::string& s) {
-    Json value;
-    value.type = Json::String;
+json::Json string_json(const std::string& s) {
+    json::Json value;
+    value.type = json::Json::String;
     value.text = s;
     return value;
 }
 
-Json number_json(const std::string& s, const Mark& mark) {
-    Json value;
+json::Json number_json(const std::string& s, const Mark& mark) {
+    json::Json value;
     int special = special_float(s);
     if (special) {
-        value.type = Json::Float;
+        value.type = json::Json::Float;
         value.real = special == 2 ? std::numeric_limits<double>::quiet_NaN()
                                   : special * std::numeric_limits<double>::infinity();
         return value;
@@ -229,7 +228,7 @@ Json number_json(const std::string& s, const Mark& mark) {
             acc = acc * b + d;
         }
         if (!big) {
-            value.type = Json::Int;
+            value.type = json::Json::Int;
             value.integer = negative ? (acc == (std::uint64_t{1} << 63) ? std::numeric_limits<std::int64_t>::min()
                                                                          : -static_cast<std::int64_t>(acc))
                                      : static_cast<std::int64_t>(acc);
@@ -237,7 +236,7 @@ Json number_json(const std::string& s, const Mark& mark) {
         }
         if (base == 10) {
             std::size_t first = digits.find_first_not_of('0');
-            value.type = Json::BigInt;
+            value.type = json::Json::BigInt;
             value.text = (negative ? "-" : "") + (first == std::string::npos ? std::string("0") : digits.substr(first));
             value.real = std::strtod(value.text.c_str(), nullptr);
             return value;
@@ -257,7 +256,7 @@ Json number_json(const std::string& s, const Mark& mark) {
                 carry /= 10;
             }
         }
-        value.type = Json::BigInt;
+        value.type = json::Json::BigInt;
         for (int d : number) value.text += static_cast<char>('0' + d);
         if (value.text.empty()) value.text = "0";
         value.real = std::strtod(value.text.c_str(), nullptr);
@@ -273,26 +272,26 @@ Json number_json(const std::string& s, const Mark& mark) {
             for (char& c : text)
                 if (c == '.') c = *c_point;
         (void)point;
-        value.type = Json::Float;
+        value.type = json::Json::Float;
         value.real = std::strtod(text.c_str(), nullptr);
         return value;
     }
     throw YamlError("\"" + s + "\" is not a number", mark);
 }
 
-Json scalar_json(const Node& node) {
+json::Json scalar_json(const Node& node) {
     const std::string& s = node.value;
     std::string tag = node.tag;
     if (tag == std::string(CORE) + "str" || tag == "!") return string_json(s);
     if (tag == std::string(CORE) + "null") {
         if (!is_null(s)) throw YamlError("\"" + s + "\" is not a null", node.start);
-        return Json();
+        return json::Json();
     }
     if (tag == std::string(CORE) + "bool") {
         int b = as_bool(s);
         if (b < 0) throw YamlError("\"" + s + "\" is not a boolean", node.start);
-        Json value;
-        value.type = Json::Bool;
+        json::Json value;
+        value.type = json::Json::Bool;
         value.boolean = b == 1;
         return value;
     }
@@ -302,21 +301,21 @@ Json scalar_json(const Node& node) {
     }
     if (tag == std::string(CORE) + "float") {
         if (!is_float(s) && !special_float(s) && !is_int(s)) throw YamlError("\"" + s + "\" is not a float", node.start);
-        Json value = number_json(s, node.start);
-        if (value.type == Json::Int) {
-            value.type = Json::Float;
+        json::Json value = number_json(s, node.start);
+        if (value.type == json::Json::Int) {
+            value.type = json::Json::Float;
             value.real = static_cast<double>(value.integer);
-        } else if (value.type == Json::BigInt) {
-            value.type = Json::Float;
+        } else if (value.type == json::Json::BigInt) {
+            value.type = json::Json::Float;
         }
         return value;
     }
     if (!tag.empty() || node.style != ScalarStyle::Plain) return string_json(s);
-    if (is_null(s)) return Json();
+    if (is_null(s)) return json::Json();
     int b = as_bool(s);
     if (b >= 0) {
-        Json value;
-        value.type = Json::Bool;
+        json::Json value;
+        value.type = json::Json::Bool;
         value.boolean = b == 1;
         return value;
     }
@@ -334,22 +333,22 @@ std::string key_text(const Node& key) {
 
 // Iterative, with an explicit stack, so no document can overflow the call stack; a node reached
 // again while it is still open is an alias cycle.
-Json to_json(const Node& root) {
+json::Json to_json(const Node& root) {
     struct Frame {
         const Node* node;
-        Json* out;
+        json::Json* out;
         std::size_t next;
     };
-    Json result;
+    json::Json result;
     std::vector<Frame> stack;
     std::unordered_set<const Node*> open;
-    auto start = [&](const Node* node, Json* out) {
+    auto start = [&](const Node* node, json::Json* out) {
         if (node->kind == Node::Scalar) {
             *out = scalar_json(*node);
             return;
         }
         if (!open.insert(node).second) throw YamlError("an alias cycle has no JSON form", node->start);
-        out->type = node->kind == Node::Sequence ? Json::Array : Json::Object;
+        out->type = node->kind == Node::Sequence ? json::Json::Array : json::Json::Object;
         if (node->kind == Node::Mapping && node->items.size() % 2)
             throw YamlError("internal error: a mapping with a key and no value", node->start);
         out->items.reserve(node->kind == Node::Sequence ? node->items.size() : node->items.size() / 2);
@@ -364,7 +363,7 @@ Json to_json(const Node& root) {
             stack.pop_back();
             continue;
         }
-        Json* out = frame.out;
+        json::Json* out = frame.out;
         const Node* child;
         if (node->kind == Node::Sequence) {
             child = node->items[frame.next++];
@@ -381,9 +380,9 @@ Json to_json(const Node& root) {
                 out->keys.push_back(key);
                 out->items.emplace_back();
             } else {
-                out->items[position] = Json();
+                out->items[position] = json::Json();
             }
-            Json* slot = &out->items[position];
+            json::Json* slot = &out->items[position];
             start(child, slot);
             continue;
         }
@@ -392,16 +391,15 @@ Json to_json(const Node& root) {
     return result;
 }
 
-std::vector<Json> parse_yaml_all(std::string_view text, const Options& options) {
-    std::vector<Json> out;
+std::vector<json::Json> parse_yaml_all(std::string_view text, const Options& options) {
+    std::vector<json::Json> out;
     for (const Document& document : load_yaml_all(text, options)) out.push_back(to_json(*document.root));
     return out;
 }
 
-Json parse_yaml(std::string_view text, const Options& options) {
+json::Json parse_yaml(std::string_view text, const Options& options) {
     Document document = load_yaml(text, options);
     return to_json(*document.root);
 }
 
-}  // namespace yaml
-}  // namespace mira_bpe
+}  // namespace common::yaml

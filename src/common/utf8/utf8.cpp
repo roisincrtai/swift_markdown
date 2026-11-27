@@ -1,7 +1,7 @@
-// tokenizer/cpp/utf8.cpp -- see utf8.hpp. Standard C++17 only.
+// utf8.cpp -- see utf8.hpp. Standard C++17 only.
 #include "utf8.hpp"
 
-namespace mira_bpe {
+namespace common::utf8 {
 namespace {
 
 // ---------------------------------------------------------------------------------------------
@@ -161,4 +161,4 @@ std::string utf8_replace(std::string_view bytes) {
     return out;
 }
 
-}  // namespace mira_bpe
+}  // namespace common::utf8

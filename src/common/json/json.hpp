@@ -1,4 +1,4 @@
-// tokenizer/cpp/json.hpp -- a strict, complete JSON reader and writer (RFC 8259, ECMA-404), and
+// json.hpp -- a strict, complete JSON reader and writer (RFC 8259, ECMA-404), and
 // JSON Lines.
 //
 // Standard C++17 only. The design follows nlohmann/json:
@@ -39,7 +39,7 @@
 #include <string_view>
 #include <vector>
 
-namespace mira_bpe {
+namespace common::json {
 
 // One JSON value; an object keeps its keys in the order they were first written.
 struct Json {
@@ -102,4 +102,4 @@ std::string dump_jsonl(const std::vector<Json>& values, const DumpOptions& optio
 // An Int value.
 Json json_int(std::int64_t value);
 
-}  // namespace mira_bpe
+}  // namespace common::json

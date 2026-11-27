@@ -1,4 +1,4 @@
-// tokenizer/cpp/scanner.hpp -- characters to tokens: the first half of yaml.hpp's reader.
+// yaml_scanner.hpp -- characters to tokens: the first half of yaml.hpp's reader.
 //
 // The text is decoded to code points once (decode_stream), and the scanner reads them with one
 // character of look-ahead beyond what each token needs. Like libyaml's, it keeps the indentation
@@ -17,8 +17,7 @@
 
 #include "yaml.hpp"
 
-namespace mira_bpe {
-namespace yaml {
+namespace common::yaml {
 
 // The code points of a UTF-8, UTF-16 or UTF-32 stream; throws YamlError on a malformed encoding or a
 // character that is not c-printable.
@@ -130,5 +129,4 @@ private:
     void scan_plain_spaces(std::string& whitespace, std::string& breaks, bool* leading_break, int indent);
 };
 
-}  // namespace yaml
-}  // namespace mira_bpe
+}  // namespace common::yaml

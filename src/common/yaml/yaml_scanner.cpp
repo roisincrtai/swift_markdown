@@ -1,10 +1,9 @@
-// tokenizer/cpp/scanner.cpp -- see scanner.hpp. Standard C++17 only.
+// yaml_scanner.cpp -- see scanner.hpp. Standard C++17 only.
 #include "yaml_scanner.hpp"
 
 #include <algorithm>
 
-namespace mira_bpe {
-namespace yaml {
+namespace common::yaml {
 
 YamlError::YamlError(const std::string& what, const Mark& where)
     : std::runtime_error(what + " (line " + std::to_string(where.line + 1) + ", column " +
@@ -1009,5 +1008,4 @@ void Scanner::fetch_plain() {
     push(std::move(token));
 }
 
-}  // namespace yaml
-}  // namespace mira_bpe
+}  // namespace common::yaml
